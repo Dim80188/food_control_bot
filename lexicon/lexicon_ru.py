@@ -16,6 +16,41 @@ LEXICON_ACTIVITY: dict[str, str] = {
     '': '',
 }
 
+LEXICON_PRODUCT_CATEGORIES: dict[str, str] = {
+    'meat': 'мясо',
+    'bird': 'птица',
+    'vegetables': 'овощи',
+    'fruits': 'фрукты',
+    'pasta': 'макароны',
+}
+
+LEXICON_PRODUCTS: dict[str, str] = {
+    'beef': 'говядина',
+    'pork': 'свинина',
+    'mutton': 'баранина',
+    'chicken': 'курица',
+    'turkey': 'индейка',
+    'duck': 'утка',
+    'cabbage': 'капуста',
+    'cucumbers': 'огурцы',
+    'potato': 'картошка',
+    'apple': 'яблоко',
+    'orange': 'апельсин',
+    'banana': 'банан',
+    'spaghetti': 'спагетти',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+    '': '',
+}
+
 
 
 

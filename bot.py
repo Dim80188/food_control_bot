@@ -6,7 +6,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from config_data.config import Config, load_config
 from middlewares.dbmiddleware import DbSession
 from keyboards.main_menu import set_main_menu
-from handlers import user_handlers
+from handlers import user_handlers, input_handlers
 
 
 logger = logging.getLogger(__name__)
@@ -36,6 +36,7 @@ async def main():
     await set_main_menu(bot)
 
     dp.include_router(user_handlers.router)
+    dp.include_router(input_handlers.router)
 
     await bot.delete_webhook(drop_pending_updates=True)
     try:
