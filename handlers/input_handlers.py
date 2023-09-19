@@ -28,7 +28,7 @@ async def change_meat(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data.in_({'beef', 'pork', 'mutton'}), StateFilter(Input_products.change_product_categories))
 async def change_weight_beef(callback: CallbackQuery, state: FSMContext):
-    await state.update_data(user_id=callback.from_user.id)
+    # await state.update_data(user_id=callback.from_user.id)
     await state.update_data(date_meal=datetime.now().date())
     await state.update_data(name=LEXICON_PRODUCTS[callback.data])
     await callback.message.answer('Запишите вес')
@@ -42,7 +42,7 @@ async def change_bird(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data.in_({'chicken', 'turkey', 'duck'}), StateFilter(Input_products.change_product_categories))
 async def change_weight_chicken(callback: CallbackQuery, state: FSMContext):
-    await state.update_data(user_id=callback.from_user.id)
+    # await state.update_data(user_id=callback.from_user.id)
     await state.update_data(date_meal=datetime.now().date())
     await state.update_data(name=LEXICON_PRODUCTS[callback.data])
     await callback.message.answer('Запишите вес')
@@ -56,7 +56,7 @@ async def change_vegetables(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data.in_({'cabbage', 'cucumbers', 'potato'}), StateFilter(Input_products.change_product_categories))
 async def change_weight_vegetables(callback: CallbackQuery, state: FSMContext):
-    await state.update_data(user_id=callback.from_user.id)
+    # await state.update_data(user_id=callback.from_user.id)
     await state.update_data(date_meal=datetime.now().date())
     await state.update_data(name=LEXICON_PRODUCTS[callback.data])
     await callback.message.answer('Запишите вес')
@@ -69,7 +69,7 @@ async def change_fruits(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data.in_({'apple', 'orange', 'banana'}), StateFilter(Input_products.change_product_categories))
 async def change_weight_fruits(callback: CallbackQuery, state: FSMContext):
-    await state.update_data(user_id=callback.from_user.id)
+    # await state.update_data(user_id=callback.from_user.id)
     await state.update_data(date_meal=datetime.now().date())
     await state.update_data(name=LEXICON_PRODUCTS[callback.data])
     await callback.message.answer('Запишите вес')
@@ -81,8 +81,10 @@ async def change_pasta(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Input_products.change_product_categories)
 
 @router.callback_query(F.data.in_({'spaghetti'}))
-async def change_weight_pasta(callback: CallbackQuery, state: FSMContext):
-    await state.update_data(user_id=callback.from_user.id)
+async def change_weight_pasta(callback: CallbackQuery, state: FSMContext, request: Request):
+
+    # await state.update_data(user_id=callback.from_user.id)
+
     await state.update_data(date_meal=datetime.now().date())
     await state.update_data(name=LEXICON_PRODUCTS[callback.data])
     await callback.message.answer('Запишите вес')
@@ -90,9 +92,12 @@ async def change_weight_pasta(callback: CallbackQuery, state: FSMContext):
 
 @router.message(StateFilter(Input_products.change_weight))
 async def write_weight(message: Message, state: FSMContext, request: Request):
+    user_id = await request.get_user_id(message.from_user.id)
+    await state.update_data(user_id=user_id)
     await state.update_data(weight=message.text)
     data = await state.get_data()
-    print(data)
+    await request.add_meal(data)
+
 
 
 
