@@ -17,11 +17,22 @@ class Request:
 
     async def add_meal(self, data):
         await self.connector.execute("INSERT INTO meal (user_id, date_meal, product_name, weight) VALUES ($1, $2, $3, $4)",
-                                     data['user_id'], data['date_meal'], data['name'], int(data['weight']))
+                                     data['user_id'], data['date_meal'], data['name'], float(data['weight']))
 
 
     async def get_meal(self, data):
         await self.connector.execute("SELECT calories, proteins FROM products, meal WHERE products.name = $1 AND meal.product_name = $1",
                                      data['product'])
+
+
+# a = [[1, 2, 3, 4], [2, 4, 5, 1], [9, 4, 2, 0]]
+# b = []
+# c = 0
+# d = 0
+# for i in range(len(a[0])):
+#     c = 0
+#     for j in range(len(a)):
+#         c += a[j][i]
+#     b.append(c)
 
 

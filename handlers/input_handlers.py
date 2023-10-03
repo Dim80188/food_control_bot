@@ -288,11 +288,22 @@ async def change_weight_honey(callback: CallbackQuery, state: FSMContext):
 async def write_weight(message: Message, state: FSMContext, request: Request):
     user_id = await request.get_user_id(message.from_user.id)
     await state.update_data(user_id=user_id)
-    await state.update_data(weight=message.text)
-    data = await state.get_data()
-    await request.add_meal(data)
-    await message.answer('Данные внесены. Продолжаем вносить?', reply_markup=continue_complete_kb)
+    # await state.update_data(weight=message.text)
+    weight = message.text
+    if ',' in weight:
+        weight_in_base = weight.replace(',', '.')
+    else:
+        weight_in_base = weight
+    weight_1 = weight_in_base.replace('.', '')
+    if weight_1.isdigit():
+        await state.update_data(weight=weight_in_base)
+        data = await state.get_data()
+        await request.add_meal(data)
+        await message.answer('Данные внесены. Продолжаем вносить?', reply_markup=continue_complete_kb)
+    else:
 
+        await message.answer('<b>Вес должен быть числом.</b>\n'
+                              '<b>Пожалуйста, введите данные заново</b>', reply_markup=product_categories_kb)
 
 
 
