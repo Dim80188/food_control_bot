@@ -24,6 +24,25 @@ class Request:
         await self.connector.execute("SELECT calories, proteins FROM products, meal WHERE products.name = $1 AND meal.product_name = $1",
                                      data['product'])
 
+    async def sql_read(self, period, period_id):
+        sql_id = period_id
+        sql_start = period['start_period']
+        sql_end = period['end_period']
+        ret = await self.connector.fetch(f"SELECT product_name, calories, proteins, carbon, fat FROM accounts, meal, products WHERE accounts.id = meal.user_id AND products.name = meal.product_name AND meal.date_meal BETWEEN $1 AND $2 AND accounts.id_telegram = $3",
+                                         sql_start, sql_end, sql_id)
+
+        return ret
+
+    async def total_data(self, ret):
+        counter = 0
+        total_list = []
+        for i in range(1, len(ret[0])):
+            counter = 0
+            for j in range(len(ret)):
+                counter += ret[j][i]
+            total_list.append(counter)
+        return total_list
+
 
 # a = [[1, 2, 3, 4], [2, 4, 5, 1], [9, 4, 2, 0]]
 # b = []
