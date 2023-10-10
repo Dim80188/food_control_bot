@@ -82,8 +82,8 @@ LEXICON_PRODUCTS: dict[str, str] = {
     'sour_cream_25': 'сметана 25%',
     'sour_cream_20': 'сметана 20%',
     'sour_cream_15': 'сметана 15%',
-    'butter': 'масло сливочное',
-    'cream': 'сливки',
+    'butter_82': 'масло сливочное 82.5%', # attention
+    'cream_20': 'сливки 20%', # attention
     'selected_eggs': 'яйца отборные',
     'eggs_1': 'яйца 1-й кат',
     'hard_cheese': 'твердый сыр',

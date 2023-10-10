@@ -28,7 +28,7 @@ class Request:
         sql_id = period_id
         sql_start = period['start_period']
         sql_end = period['end_period']
-        ret = await self.connector.fetch(f"SELECT product_name, calories, proteins, carbon, fat FROM accounts, meal, products WHERE accounts.id = meal.user_id AND products.name = meal.product_name AND meal.date_meal BETWEEN $1 AND $2 AND accounts.id_telegram = $3",
+        ret = await self.connector.fetch(f"SELECT product_name, products.calories * meal.weight AS calories, products.proteins * meal.weight AS proteins, products.carbon * meal.weight AS carbon, products.fat * meal.weight AS fat FROM accounts, meal, products WHERE accounts.id = meal.user_id AND products.name = meal.product_name AND meal.date_meal BETWEEN $1 AND $2 AND accounts.id_telegram = $3",
                                          sql_start, sql_end, sql_id)
 
         return ret
