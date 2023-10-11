@@ -8,3 +8,7 @@ class Input_products(StatesGroup):
 class Select_date(StatesGroup):
     start_period = State()
     end_period = State()
+
+class Delete_data(StatesGroup):
+    change_date = State()
+    change_data = State()

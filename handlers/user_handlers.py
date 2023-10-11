@@ -3,10 +3,11 @@ from aiogram import F
 from aiogram.filters import Command, CommandStart, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.types import Message, CallbackQuery
 from keyboards.keyboard_utils import write_show_kb
 from services.simple_calendar import calendar_callback_filter, SimpleCalendar
-from states.states import Select_date
+from states.states import Select_date, Delete_data
 from database.database import Request
 
 router: Router = Router()
@@ -52,13 +53,36 @@ async def end_period_change(callback_query: CallbackQuery, state: FSMContext, re
         period = await state.get_data()
         period_id = callback_query.from_user.id
         read = await request.sql_read(period, period_id)
+
         for ret in read:
-            await callback_query.message.answer(f'Продукт {ret[0]}. Содержит {ret[1]} ккал, {ret[2]}гр белка, {ret[3]}гр углеводов, {ret[4]}гр жиров.\n')
+            await callback_query.message.answer(f'Продукт {ret[0]}. Содержит {ret[1]} ккал, {round(ret[2], 2)}гр белка, {round(ret[3], 2)}гр углеводов, {round(ret[4], 2)}гр жиров.\n')
         total = await request.total_data(read)
-        await callback_query.message.answer(f'Итого {total[0]}ккал, {total[1]}гр белка, {total[2]}гр углеводов, {total[3]}гр жиров')
+        await callback_query.message.answer(f'Итого {total[0]}ккал, {round(total[1], 2)}гр белка, {round(total[2], 2)}гр углеводов, {round(total[3], 2)}гр жиров')
 
 
+@router.message(Command(commands='delete'))
+async def process_delete_command_state(message: Message, state: FSMContext):
+    await message.answer('Вы выбрали удалить запись.\nВыберите дату', reply_markup=await SimpleCalendar().start_calendar())
+    await state.set_state(Delete_data.change_date)
 
+@router.callback_query(calendar_callback_filter, StateFilter(Delete_data.change_date))
+async def show_deletion_data(callback_query: CallbackQuery, state: FSMContext, request: Request):
+    selected, date = await SimpleCalendar().process_selection(callback_query)
+    if selected:
+        await callback_query.message.answer(f'Вы выбрали {date.strftime("%d/%m/%Y")}')
+        await state.update_data(day_deletion_data=date.date())
+        period = await state.get_data()
+        period_id = await request.get_user_id(callback_query.from_user.id)
+        read = await request.sql_read_one_day(period, period_id)
+        for ret in read:
+            await callback_query.message.answer(f'Дата{ret[2]}. Продукт {ret[3]}. Вес{ret[4]}.\n', reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Удалить', callback_data=f'del {ret[0]}')],]))
+        await state.set_state(Delete_data.change_data)
+
+@router.callback_query(lambda x: x.data and x.data.startswith('del '), StateFilter(Delete_data.change_data))
+async def del_callback_run(callback: CallbackQuery, state: FSMContext, request: Request):
+    data_1 = int(callback.data.replace('del ', ''))
+    await request.sql_delete_command(data_1)
+    await callback.message.answer('Запись удалена.\n Выберите дальнейшие действия', reply_markup=write_show_kb)
 
 
 

@@ -17,7 +17,7 @@ class Request:
 
     async def add_meal(self, data):
         await self.connector.execute("INSERT INTO meal (user_id, date_meal, product_name, weight) VALUES ($1, $2, $3, $4)",
-                                     data['user_id'], data['date_meal'], data['name'], float(data['weight']))
+                                     data['user_id'], data['date_meal'], data['name'], (float(data['weight'])/100))
 
 
     async def get_meal(self, data):
@@ -42,6 +42,16 @@ class Request:
                 counter += ret[j][i]
             total_list.append(counter)
         return total_list
+
+    async def sql_read_one_day(self, period, period_id):
+        sql_id = period_id
+        sql_date = period['day_deletion_data']
+        ret = await self.connector.fetch(f"SELECT * FROM meal WHERE user_id = $1 AND date_meal = $2", sql_id, sql_date)
+        return ret
+
+    async def sql_delete_command(self, id):
+        id_1 = id
+        await self.connector.execute('DELETE FROM meal WHERE id = $1', id_1)
 
 
 # a = [[1, 2, 3, 4], [2, 4, 5, 1], [9, 4, 2, 0]]
