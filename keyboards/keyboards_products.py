@@ -212,12 +212,12 @@ button_sour_cream_15: InlineKeyboardButton = InlineKeyboardButton(
     callback_data='sour_cream_15'
 )
 button_butter: InlineKeyboardButton = InlineKeyboardButton(
-    text=LEXICON_PRODUCTS['butter'],
-    callback_data='butter'
+    text=LEXICON_PRODUCTS['butter_82'],
+    callback_data='butter_82'
 )
 button_cream: InlineKeyboardButton = InlineKeyboardButton(
-    text=LEXICON_PRODUCTS['cream'],
-    callback_data='cream'
+    text=LEXICON_PRODUCTS['cream_20'],
+    callback_data='cream_20'
 )
 
 milk_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()

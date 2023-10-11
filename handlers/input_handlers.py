@@ -94,7 +94,7 @@ async def change_milk(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Input_products.change_product_categories)
 
 @router.callback_query(F.data.in_({'milk_3_2', 'kefir_3_2', 'yogurt', 'cottage_cheese_9', 'cottage_cheese_5', 'cottage_cheese_1',
-                                   'sour_cream_25', 'sour_cream_20', 'sour_cream_15', 'butter', 'cream'}), StateFilter(Input_products.change_product_categories))
+                                   'sour_cream_25', 'sour_cream_20', 'sour_cream_15', 'butter_82', 'cream_20'}), StateFilter(Input_products.change_product_categories))
 async def change_weight_milk(callback: CallbackQuery, state: FSMContext):
     await state.update_data(date_meal=datetime.now().date())
     await state.update_data(name=LEXICON_PRODUCTS[callback.data])
