@@ -1,6 +1,7 @@
 from aiogram import Router
 from aiogram import F
 from aiogram.filters import Command, CommandStart, StateFilter
+from lexicon.lexicon_ru import LEXICON
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -16,7 +17,11 @@ router: Router = Router()
 @router.message(CommandStart())
 async def process_start_command(message: Message, request: Request):
     await request.add_user(message.from_user.id)
-    await message.answer(text='Выбери действие', reply_markup=write_show_kb)
+    await message.answer(text=LEXICON['/start'], reply_markup=write_show_kb)
+
+@router.message(Command(commands='help'))
+async def process_help_command(message: Message):
+    await message.answer(text=LEXICON['/help'], reply_markup=write_show_kb)
 
 @router.message(Command(commands='cancel'), ~StateFilter(default_state))
 async def process_cancel_command_state(message: Message, state: FSMContext):
@@ -53,11 +58,14 @@ async def end_period_change(callback_query: CallbackQuery, state: FSMContext, re
         period = await state.get_data()
         period_id = callback_query.from_user.id
         read = await request.sql_read(period, period_id)
+        if len(read) == 0:
+            await callback_query.message.answer('Данных за указанный период нет.\n Выберите дальнейшие действия', reply_markup=write_show_kb)
+        else:
 
-        for ret in read:
-            await callback_query.message.answer(f'Продукт {ret[0]}. Содержит {int(ret[1])} ккал, {round(ret[2], 2)}гр белка, {round(ret[3], 2)}гр углеводов, {round(ret[4], 2)}гр жиров.\n')
-        total = await request.total_data(read)
-        await callback_query.message.answer(f'Итого {int(total[0])}ккал, {round(total[1], 2)}гр белка, {round(total[2], 2)}гр углеводов, {round(total[3], 2)}гр жиров')
+            for ret in read:
+                await callback_query.message.answer(f'Продукт {ret[0]}. Содержит {int(ret[1])} ккал, {round(ret[2], 2)}гр белка, {round(ret[3], 2)}гр углеводов, {round(ret[4], 2)}гр жиров.\n')
+            total = await request.total_data(read)
+            await callback_query.message.answer(f'Итого {int(total[0])}ккал, {round(total[1], 2)}гр белка, {round(total[2], 2)}гр углеводов, {round(total[3], 2)}гр жиров')
 
 
 @router.message(Command(commands='delete'))
@@ -74,15 +82,20 @@ async def show_deletion_data(callback_query: CallbackQuery, state: FSMContext, r
         period = await state.get_data()
         period_id = await request.get_user_id(callback_query.from_user.id)
         read = await request.sql_read_one_day(period, period_id)
-        for ret in read:
-            await callback_query.message.answer(f'Дата{ret[2]}. Продукт {ret[3]}. Вес{ret[4]}.\n', reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Удалить', callback_data=f'del {ret[0]}')],]))
-        await state.set_state(Delete_data.change_data)
+        if len(read) == 0:
+            await callback_query.message.answer('Данных за указанный период нет.\n Выберите дальнейшие действия', reply_markup=write_show_kb)
+            await state.clear()
+        else:
+            for ret in read:
+                await callback_query.message.answer(f'Дата{ret[2]}. Продукт {ret[3]}. Вес{ret[4]}.\n', reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text='Удалить', callback_data=f'del {ret[0]}')],]))
+            await state.set_state(Delete_data.change_data)
 
 @router.callback_query(lambda x: x.data and x.data.startswith('del '), StateFilter(Delete_data.change_data))
 async def del_callback_run(callback: CallbackQuery, state: FSMContext, request: Request):
     data_1 = int(callback.data.replace('del ', ''))
     await request.sql_delete_command(data_1)
     await callback.message.answer('Запись удалена.\n Выберите дальнейшие действия', reply_markup=write_show_kb)
+    await state.clear()
 
 
 
