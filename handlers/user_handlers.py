@@ -55,9 +55,9 @@ async def end_period_change(callback_query: CallbackQuery, state: FSMContext, re
         read = await request.sql_read(period, period_id)
 
         for ret in read:
-            await callback_query.message.answer(f'Продукт {ret[0]}. Содержит {ret[1]} ккал, {round(ret[2], 2)}гр белка, {round(ret[3], 2)}гр углеводов, {round(ret[4], 2)}гр жиров.\n')
+            await callback_query.message.answer(f'Продукт {ret[0]}. Содержит {int(ret[1])} ккал, {round(ret[2], 2)}гр белка, {round(ret[3], 2)}гр углеводов, {round(ret[4], 2)}гр жиров.\n')
         total = await request.total_data(read)
-        await callback_query.message.answer(f'Итого {total[0]}ккал, {round(total[1], 2)}гр белка, {round(total[2], 2)}гр углеводов, {round(total[3], 2)}гр жиров')
+        await callback_query.message.answer(f'Итого {int(total[0])}ккал, {round(total[1], 2)}гр белка, {round(total[2], 2)}гр углеводов, {round(total[3], 2)}гр жиров')
 
 
 @router.message(Command(commands='delete'))
