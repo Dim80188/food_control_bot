@@ -179,7 +179,7 @@ async def change_bread(callback: CallbackQuery, state: FSMContext):
     await state.set_state(Input_products.change_product_categories)
 
 
-@router.callback_query(F.data.in_({'wheat_bread', 'rye_bread', 'bread'}), StateFilter(Input_products.change_product_categories))
+@router.callback_query(F.data.in_({'wheat_bread', 'rye_bread', 'bread_1'}), StateFilter(Input_products.change_product_categories))
 async def change_weight_juices(callback: CallbackQuery, state: FSMContext):
     await state.update_data(date_meal=datetime.now().date())
     await state.update_data(name=LEXICON_PRODUCTS[callback.data])

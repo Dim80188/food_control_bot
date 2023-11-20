@@ -331,8 +331,8 @@ button_rye_bread: InlineKeyboardButton = InlineKeyboardButton(
 )
 
 button_bread: InlineKeyboardButton = InlineKeyboardButton(
-    text=LEXICON_PRODUCTS['bread'],
-    callback_data='bread'
+    text=LEXICON_PRODUCTS['bread_1'],
+    callback_data='bread_1'
 )
 bread_builder: InlineKeyboardBuilder = InlineKeyboardBuilder()
 bread_builder.row(button_wheat_bread, button_rye_bread, button_bread, width=2)

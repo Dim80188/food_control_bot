@@ -61,12 +61,14 @@ async def end_period_change(callback_query: CallbackQuery, state: FSMContext, re
         if len(read) == 0:
             await callback_query.message.answer('Данных за указанный период нет.\n Выберите дальнейшие действия', reply_markup=write_show_kb)
         else:
-
+            total = await request.total_data(read)
+            await callback_query.message.answer(f'За указанный период Вы получили {int(total[0])}ккал, {round(total[1], 2)}гр белка, {round(total[2], 2)}гр углеводов, {round(total[3], 2)}гр жиров\n'
+                                                f'Ниже разбивка по продуктам')
             for ret in read:
                 await callback_query.message.answer(f'Продукт {ret[0]}. Содержит {int(ret[1])} ккал, {round(ret[2], 2)}гр белка, {round(ret[3], 2)}гр углеводов, {round(ret[4], 2)}гр жиров.\n')
-            total = await request.total_data(read)
-            await callback_query.message.answer(f'Итого {int(total[0])}ккал, {round(total[1], 2)}гр белка, {round(total[2], 2)}гр углеводов, {round(total[3], 2)}гр жиров')
 
+
+            await callback_query.message.answer('Выберите дальнейшие действия', reply_markup=write_show_kb)
 
 @router.message(Command(commands='delete'))
 async def process_delete_command_state(message: Message, state: FSMContext):

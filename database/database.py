@@ -54,14 +54,5 @@ class Request:
         await self.connector.execute('DELETE FROM meal WHERE id = $1', id_1)
 
 
-# a = [[1, 2, 3, 4], [2, 4, 5, 1], [9, 4, 2, 0]]
-# b = []
-# c = 0
-# d = 0
-# for i in range(len(a[0])):
-#     c = 0
-#     for j in range(len(a)):
-#         c += a[j][i]
-#     b.append(c)
 
 

@@ -124,7 +124,7 @@ LEXICON_PRODUCTS: dict[str, str] = {
     'tomato juice': 'томатный сок',
     'wheat_bread': 'хлеб пшеничный',
     'rye_bread': 'хлеб ржаной',
-    'bread': 'хлебцы',
+    'bread_1': 'хлебцы',
     'milk_sausages': 'сосиски молочные',
     'doctors_sausages': 'сосиски докторские',
     'doctors_sausage': 'колбаса докторская',
